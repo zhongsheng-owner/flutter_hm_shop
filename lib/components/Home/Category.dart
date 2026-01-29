@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hm_shop/viewmodels/home.dart';
 
 class Category extends StatefulWidget {
-  const Category({super.key});
+  // 列表数据
+  final List<CategoryItem> categoryList;
+  const Category({super.key, required this.categoryList});
 
   @override
   State<Category> createState() => _CategoryState();
@@ -17,15 +20,25 @@ class _CategoryState extends State<Category> {
       height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal, // 设置水平滚动方向
-        itemCount: 10,
+        itemCount: widget.categoryList.length,
         itemBuilder: (BuildContext context, int index) {
+          final CategoryItem category = widget.categoryList[index];
           return Container(
             alignment: Alignment.center,
             width: 80,
             height: 100,
-            color: Colors.blue,
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 231, 232, 234),
+              borderRadius: BorderRadius.circular(40),
+            ),
             margin: EdgeInsets.symmetric(horizontal: 10),
-            child: Text("分类$index", style: TextStyle(color: Colors.white)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.network(category.picture, width: 40, height: 40),
+                Text(category.name, style: TextStyle(color: Colors.black)),
+              ],
+            ),
           );
         },
       ),
