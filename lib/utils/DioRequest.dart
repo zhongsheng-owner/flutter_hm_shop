@@ -27,7 +27,7 @@ class DioRequest {
         },
         onResponse: (response, handler) {
           // 打印响应信息
-          print('响应数据：${response.data}');
+          // print('响应数据：${response.data}');
           // http状态码 200 300
           if (response.statusCode! >= 200 && response.statusCode! < 300) {
             return handler.next(response); // continue

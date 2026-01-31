@@ -19,12 +19,19 @@ class _HomeViewState extends State<HomeView> {
   List<BannerItem> _bannerList = [];
   // 分类列表数据
   List<CategoryItem> _categoryList = [];
+  //特惠推荐数据
+  SpecialRecommendResult _specialRecommendResult = SpecialRecommendResult(
+    id: '',
+    title: "",
+    subTypes: [],
+  );
 
   @override
   void initState() {
     super.initState();
     _getBannerList();
     _getCategoryList();
+    _getSpecialRecommend();
   }
 
   // 获取轮播图列表数据
@@ -39,6 +46,12 @@ class _HomeViewState extends State<HomeView> {
     setState(() {});
   }
 
+  // 获取特惠推荐数据
+  void _getSpecialRecommend() async {
+    _specialRecommendResult = await getProductListAPI();
+    setState(() {});
+  }
+
   // 获取滚动容器的内容
   List<Widget> _getScrollChildren() {
     return [
@@ -49,11 +62,13 @@ class _HomeViewState extends State<HomeView> {
       // 放置分类组件
       // SliverGrid SliverList只能纵向排列
       // 所以只能ListView
-      SliverToBoxAdapter(child: Category( categoryList: _categoryList)),
+      SliverToBoxAdapter(child: Category(categoryList: _categoryList)),
       SliverToBoxAdapter(child: SizedBox(height: 10)),
 
       // 推荐组件
-      SliverToBoxAdapter(child: Suggestion()),
+      SliverToBoxAdapter(
+        child: Suggestion(specialRecommendResult: _specialRecommendResult),
+      ),
       SliverToBoxAdapter(child: SizedBox(height: 10)),
 
       // 爆款推荐组件
