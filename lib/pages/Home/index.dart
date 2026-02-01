@@ -25,6 +25,18 @@ class _HomeViewState extends State<HomeView> {
     title: "",
     subTypes: [],
   );
+  // 热榜推荐数据
+  SpecialRecommendResult _inVogueResult = SpecialRecommendResult(
+    id: '',
+    title: "",
+    subTypes: [],
+  );
+  // 一站式推荐数据
+  SpecialRecommendResult _oneStopsResult = SpecialRecommendResult(
+    id: '',
+    title: "",
+    subTypes: [],
+  );
 
   @override
   void initState() {
@@ -32,6 +44,8 @@ class _HomeViewState extends State<HomeView> {
     _getBannerList();
     _getCategoryList();
     _getSpecialRecommend();
+    _getInVogue();
+    _getOneStops();
   }
 
   // 获取轮播图列表数据
@@ -49,6 +63,18 @@ class _HomeViewState extends State<HomeView> {
   // 获取特惠推荐数据
   void _getSpecialRecommend() async {
     _specialRecommendResult = await getProductListAPI();
+    setState(() {});
+  }
+
+  // 获取热榜推荐数据
+  void _getInVogue() async {
+    _inVogueResult = await getInVogueListAPI();
+    setState(() {});
+  }
+
+  // 获取一站式推荐数据
+  void _getOneStops() async {
+    _oneStopsResult = await getOneStopListAPI();
     setState(() {});
   }
 
@@ -78,9 +104,9 @@ class _HomeViewState extends State<HomeView> {
           child: Flex(
             direction: Axis.horizontal,
             children: [
-              Expanded(child: Hot()),
+              Expanded(child: Hot(result: _inVogueResult,type:"hot")),
               SizedBox(width: 10),
-              Expanded(child: Hot()),
+              Expanded(child: Hot(result: _oneStopsResult,type:"step")),
             ],
           ),
         ),
