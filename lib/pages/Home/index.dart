@@ -37,6 +37,8 @@ class _HomeViewState extends State<HomeView> {
     title: "",
     subTypes: [],
   );
+  // 推荐列表数据
+  List<GoodDetailItem> _recommendList = [];
 
   @override
   void initState() {
@@ -46,6 +48,7 @@ class _HomeViewState extends State<HomeView> {
     _getSpecialRecommend();
     _getInVogue();
     _getOneStops();
+    _getRecommendList();
   }
 
   // 获取轮播图列表数据
@@ -75,6 +78,12 @@ class _HomeViewState extends State<HomeView> {
   // 获取一站式推荐数据
   void _getOneStops() async {
     _oneStopsResult = await getOneStopListAPI();
+    setState(() {});
+  }
+
+  // 获取推荐列表数据
+  void _getRecommendList() async {
+    _recommendList = await getRecommendListAPI({"limit":10});
     setState(() {});
   }
 
@@ -114,7 +123,7 @@ class _HomeViewState extends State<HomeView> {
       SliverToBoxAdapter(child: SizedBox(height: 10)),
 
       // 无限滚动列表
-      MoreList(),
+      MoreList(recommendList: _recommendList),
     ];
   }
 

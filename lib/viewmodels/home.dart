@@ -129,3 +129,30 @@ class SpecialRecommendResult {
     );
   }
 }
+
+// 列表列类型
+class GoodDetailItem extends GoodsItem {
+  int payCount = 0;
+
+  // 商品详情页
+  GoodDetailItem({
+    required super.id,
+    required super.name,
+    required super.picture,
+    required super.price,
+    required super.orderNum,
+    required this.payCount,
+  }) : super(desc: "");
+
+  // 工厂函数
+  factory GoodDetailItem.formJSON(Map<String, dynamic> json) {
+    return GoodDetailItem(
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      picture: json['picture']?.toString() ?? '',
+      price: json['price']?.toString() ?? '',
+      orderNum: int.tryParse(json['orderNum']?.toString() ?? "0") ?? 0,
+      payCount: int.tryParse(json['payCount']?.toString() ?? "0") ?? 0,
+    );
+  }
+}
