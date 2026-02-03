@@ -40,6 +40,15 @@ class _HomeViewState extends State<HomeView> {
   // 推荐列表数据
   List<GoodDetailItem> _recommendList = [];
 
+  // 滚动控制器
+  final ScrollController _scrollController = ScrollController();
+  // 页码
+  int _page = 1;
+  // 是否正在加载更多数据，用于同一时间只能加载一次数据，防止多次加载
+  bool _isLoadingMore = false;
+  // 是否还有下一页
+  bool _hasMore = true;
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +58,21 @@ class _HomeViewState extends State<HomeView> {
     _getInVogue();
     _getOneStops();
     _getRecommendList();
+    _registerListener();
+  }
+
+  // 注册监听
+  void _registerListener() {
+    _scrollController.addListener(() {
+      // 滚动到底部的最大距离
+      double maxValue = _scrollController.position.maxScrollExtent;
+      // 当前滚动距离
+      double currentValue = _scrollController.position.pixels;
+      // 滚动到距离底部50距离时加载更多数据
+      if (currentValue >= (maxValue - 50)) {
+        _getRecommendList();
+      }
+    });
   }
 
   // 获取轮播图列表数据
@@ -83,8 +107,24 @@ class _HomeViewState extends State<HomeView> {
 
   // 获取推荐列表数据
   void _getRecommendList() async {
-    _recommendList = await getRecommendListAPI({"limit":10});
+    if (_isLoadingMore || !_hasMore) {
+      // 如果正在加载更多数据 或者 已经没用下一页了 ，就放弃请求直接返回
+      return;
+    }
+
+    _isLoadingMore = true; // 开始加载更多数据
+    int requestLimit = _page * 8;
+    _recommendList = await getRecommendListAPI({"limit": requestLimit});
+    _isLoadingMore = false; // 加载更多数据完成
     setState(() {});
+
+    // 判断是否还有下一页，判断条件：如果返回的数据长度小于请求的长度，则没有下一页
+    if (_recommendList.length < requestLimit) {
+      _hasMore = false;
+      return;
+    }
+
+    _page++;
   }
 
   // 获取滚动容器的内容
@@ -113,9 +153,13 @@ class _HomeViewState extends State<HomeView> {
           child: Flex(
             direction: Axis.horizontal,
             children: [
-              Expanded(child: Hot(result: _inVogueResult,type:"hot")),
+              Expanded(
+                child: Hot(result: _inVogueResult, type: "hot"),
+              ),
               SizedBox(width: 10),
-              Expanded(child: Hot(result: _oneStopsResult,type:"step")),
+              Expanded(
+                child: Hot(result: _oneStopsResult, type: "step"),
+              ),
             ],
           ),
         ),
@@ -129,6 +173,9 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(slivers: _getScrollChildren());
+    return CustomScrollView(
+      controller: _scrollController, // 绑定滚动控制器
+      slivers: _getScrollChildren(),
+    );
   }
 }
