@@ -156,3 +156,30 @@ class GoodDetailItem extends GoodsItem {
     );
   }
 }
+
+// 我的页面中的猜你喜欢的商品列表
+class GoodsDetailsItems {
+  int counts;
+  int pageSize;
+  int pages;
+  int page;
+  List<GoodDetailItem> items;
+  GoodsDetailsItems({
+    required this.counts,
+    required this.pageSize,
+    required this.pages,
+    required this.page,
+    required this.items,
+  });
+  factory GoodsDetailsItems.formJSON(Map<String, dynamic> json) {
+    return GoodsDetailsItems(
+      counts: json['counts'] ?? 0,
+      pageSize: json['pageSize'] ?? 0,
+      pages: json['pages'] ?? 0,
+      page: json['page'] ?? 0,
+      items: (json['items'] as List? ?? [])
+          .map((item) => GoodDetailItem.formJSON(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
