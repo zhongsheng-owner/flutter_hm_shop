@@ -33,10 +33,15 @@ class _MineViewState extends State<MineView> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  '立即登录',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/login");
+                  },
+                  child: Text(
+                    '立即登录',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ],
             ),
@@ -178,14 +183,12 @@ class _MineViewState extends State<MineView> {
   // 分页请求参数
   Map<String, dynamic> _params = {"page": 1, "pageSize": 10};
 
-
   // 滚动控制器
   final ScrollController _scrollController = ScrollController();
   // 是否有接口正在加载
   bool _isLoading = false;
   // 是否还有下一页数据
   bool _hasMore = true;
-
 
   @override
   void initState() {

@@ -186,7 +186,7 @@ class _HomeViewState extends State<HomeView> {
     await _getOneStops();
     await _getRecommendList();
     // 数据获取成功，意味着刷新成功
-    Toastutils.showToast(context, "刷新成功");
+    ToastUtils.showToast(context, "刷新成功");
 
     // 刷新成功后，重置填充高度
     _paddingTop = 0;
