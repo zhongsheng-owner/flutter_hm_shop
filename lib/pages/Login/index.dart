@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hm_shop/api/user.dart';
 import 'package:hm_shop/utils/ToastUtils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,6 +11,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  /// 这里可登陆的测试账号密码
+  /// account: 13200000001 ~ 13200000010(共10个账号，密码均为: 123456)
+  /// password: 123456
+
   final TextEditingController _phoneController =
       TextEditingController(); // 账号控制器
   final TextEditingController _codeController =
@@ -88,6 +94,8 @@ class _LoginPageState extends State<LoginPage> {
             ToastUtils.showToast(context, "请勾选同意协议");
             return;
           }
+          // 进行登录操作
+          _login();
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.black,
@@ -154,6 +162,21 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ],
     );
+  }
+
+  // 登录逻辑
+  Future<void> _login() async {
+    // 调用登录接口
+    try {
+      final res = await loginAPI({
+        "account": _phoneController.text,
+        "password": _codeController.text,
+      });
+      ToastUtils.showToast(context, "登录成功");
+      Navigator.pop(context); // 返回上一个页面
+    } catch (e) {
+      ToastUtils.showToast(context, (e as DioException).message);
+    }
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();

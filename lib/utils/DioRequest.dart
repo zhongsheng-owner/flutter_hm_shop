@@ -22,7 +22,7 @@ class DioRequest {
       InterceptorsWrapper(
         onRequest: (request, handler) {
           // 打印请求信息
-          print('请求地址：${request.uri}');
+          // print('请求地址：${request.uri}');
           return handler.next(request); // continue
         },
         onResponse: (response, handler) {
@@ -37,14 +37,26 @@ class DioRequest {
           ); // continue
         },
         onError: (error, handler) {
-          handler.reject(error);
+          // handler.reject(error);
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              message: error.response?.data['message'] ?? '',
+            ),
+          );
         },
       ),
     );
   }
 
+  // get请求
   Future<dynamic> get(String url, {Map<String, dynamic>? params}) {
     return _handleResponse(_dio.get(url, queryParameters: params));
+  }
+
+  // post请求
+  Future<dynamic> post(String url, {Map<String, dynamic>? params}) {
+    return _handleResponse(_dio.post(url, data: params));
   }
 
   // 进一步处理返回结果的函数
@@ -57,9 +69,16 @@ class DioRequest {
       if (data['code'] == GlobalConstants.SUCCESS_CODE) {
         return data['result']; //只要result数据
       }
-      throw Exception(data['message'] ?? "请求数据异常");
+      // throw Exception(data['message'] ?? "请求数据异常");
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: data['message'] ?? "请求数据异常",
+      );
     } catch (e) {
-      throw Exception(e);
+      // throw Exception(e);
+
+      // 不改变原来抛出的异常
+      rethrow;
     }
   }
 }
