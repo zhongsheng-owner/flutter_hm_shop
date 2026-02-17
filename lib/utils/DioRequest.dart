@@ -77,7 +77,7 @@ class DioRequest {
     } catch (e) {
       // throw Exception(e);
 
-      // 不改变原来抛出的异常
+      // 不改变原来抛出的异常 ==> 保持原始异常类型（如拦截器抛出的DioException）,不再包裹为通用Exception
       rethrow;
     }
   }
