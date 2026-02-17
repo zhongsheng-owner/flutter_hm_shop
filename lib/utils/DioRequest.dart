@@ -1,6 +1,7 @@
 // 基于Dio进行二次封装
 import 'package:dio/dio.dart';
 import 'package:hm_shop/constants/index.dart';
+import 'package:hm_shop/stores/TokenManager.dart';
 
 class DioRequest {
   final _dio = Dio();
@@ -21,6 +22,11 @@ class DioRequest {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (request, handler) {
+          // 注入token  request headers Authorization = 'Bearer token';
+          if (tokenManager.getToken().isNotEmpty) { // 在请求头中携带token，用于在一些需要token验证的接口中携带token 例如获取用户信息接口
+            request.headers['Authorization'] =
+                'Bearer ${tokenManager.getToken()}';
+          }
           // 打印请求信息
           // print('请求地址：${request.uri}');
           return handler.next(request); // continue

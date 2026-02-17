@@ -9,3 +9,10 @@ Future<UserInfo> loginAPI(Map<String, dynamic> params) async {
     await dioRequest.post(HttpConstants.LOGIN, params: params),
   );
 }
+
+// 用户信息接口
+Future<UserInfo> getUserInfoAPI() async {
+  return UserInfo.fromJSON(
+    await dioRequest.get(HttpConstants.USER_PROFILE),
+  );
+}

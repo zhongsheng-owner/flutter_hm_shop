@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hm_shop/api/user.dart';
 import 'package:hm_shop/pages/Cart/index.dart';
 import 'package:hm_shop/pages/Category/index.dart';
 import 'package:hm_shop/pages/Home/index.dart';
 import 'package:hm_shop/pages/Mine/index.dart';
+import 'package:hm_shop/stores/TokenManager.dart';
+import 'package:hm_shop/stores/UserController.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -56,6 +60,24 @@ class _MainPageState extends State<MainPage> {
 
   List<Widget> _getChildren() {
     return [HomeView(), CategoryView(), CartView(), MineView()];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // 初始化用户
+    _initUser();
+  }
+
+  //  注册用户信息的全局store对象,  put方法只能一次
+  final UserController _userController = Get.put(UserController());
+
+  void _initUser() async {
+    await tokenManager.init(); // 初始化token管理器
+    if (tokenManager.getToken().isNotEmpty) {
+      // 如果有token 就请求用户信息
+      _userController.updateUserInfo(await getUserInfoAPI());
+    }
   }
 
   @override
